@@ -1,0 +1,1 @@
+To jest plik do zaszyfrowania. Zobaczymy czy NiUnia go rozszyfruje. A potem wyślę to do prowadzącego, żeby zobaczył co Niunia zrobiła!!!l
