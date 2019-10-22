@@ -3,6 +3,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives import hashes
+import binascii
 
 # Program
 
@@ -75,26 +76,36 @@ def encrypt(key, file_name, iv):
     encrypted.close()  # zamknięcie pliku z szyfrem
 
 def decrypt(key, file_name, iv):
+    print('Odszyfrowywanie...')
     decrypted_file = open('decrypted.txt', 'wb')  # otwarcie pliku do zapisu odszyfrowanych danych
     backend = default_backend()
     cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
     decryptor = cipher.decryptor()
     decrypted = decryptor.update(open(file_name, 'rb').read()) + decryptor.finalize()  # otwarcie zaszyfrowanego pliku i jego odszyfrowanie
+
+    try:
+       unpader = padding.PKCS7(128).unpadder()  # po odszyfrowaniu należy usunąć dodane wcześniej dane dopełniające ostatni blok do 128 bitów
+       decrypted = unpader.update(decrypted) + unpader.finalize()  # usunięcie dodanych danych
+    except(ValueError):
+        pass
+
     decrypted_file.write(decrypted)  # zapis odszyfrowanego pliku
     decrypted_file.close()  # zamknięcie pliku
 
+#  obliczanie funkcji skrótu SHA256
 def hash_func(file_name):
+    print('Obliczanie funkcji skrotu...')
     digest = hashes.Hash(hashes.SHA256(), backend=default_backend())
     digest.update(open(file_name, 'rb').read())
     hashed = digest.finalize()
     print("SHA256: ")
-    print(hashed)
+    print(binascii.hexlify(hashed))  # wypisanie skrótu w formie hexadecymalnej
 
-#calculate()
-#file_name = input("Podaj nazwe pliku do zaszyfrowania:")
-#enc_key = bytearray(input("Wprowadz 16 znakowy klucz szyfrujący:"), "utf8")
-#encrypt(enc_key, file_name, iv)
-#dec_key = bytearray(input("Wprowadz 16 znakowy klucz deszyfrujący:"), "utf8")
-#decrypt(dec_key, 'encrypted.enc', iv)
+calculate()
+file_name = input("Podaj nazwe pliku do zaszyfrowania:")
+enc_key = bytearray(input("Wprowadz 16 znakowy klucz szyfrujący:"), "utf8")
+encrypt(enc_key, file_name, iv)
+dec_key = bytearray(input("Wprowadz 16 znakowy klucz deszyfrujący:"), "utf8")
+decrypt(dec_key, 'encrypted.enc', iv)
 hash_func('text.txt')
 
