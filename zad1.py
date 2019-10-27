@@ -1,4 +1,4 @@
-import random
+from crypto.Util import number
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
@@ -37,9 +37,9 @@ def inv_mod(a, b):  # rozszerzony algorytm Euklidesa - liczenie odwrotności mod
 a = 49
 b = 32
 
-# dwie duże liczby - 1024 bitowe, losowe
-c = random.getrandbits(1024)
-d = random.getrandbits(1024)
+# dwie duże liczby - 1024 bitowe, losowe, pierwsze
+c = number.getPrime(1024)
+d = number.getPrime(1024)
 
 def calculate():
     print("Male liczby:", a, b)
