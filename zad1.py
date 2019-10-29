@@ -4,6 +4,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives import hashes
 import binascii
+import random
 
 # Program
 
@@ -36,24 +37,26 @@ def inv_mod(a, b):  # rozszerzony algorytm Euklidesa - liczenie odwrotności mod
 # dwie małe liczby
 a = 49
 b = 32
+p = 17
 
 # dwie duże liczby - 1024 bitowe, losowe, pierwsze
-c = number.getPrime(1024)
-d = number.getPrime(1024)
+c = random.getrandbits(1024)
+d = random.getrandbits(1024)
+g = number.getPrime(1024)
 
 def calculate():
     print("Male liczby:", a, b)
 
-    print("Dodawanie:", a+b)
-    print("Odejmowanie:", a-b)
-    print("Mnożenie:", a*b)
-    print("Odwrotność modulo:", inv_mod(a, b))
+    print("Dodawanie:", (a+b) % p)
+    print("Odejmowanie:", (a-b) % p)
+    print("Mnożenie:", (a*b) % p)
+    print("Odwrotność modulo:", inv_mod(a, b) % p)
 
     print("\nDuże liczby:", c, '\n', d)
-    print("Dodawawnie:", c+d)
-    print("Odejmowanie:", c-d)
-    print("Mnożenie:", c*d)
-    print("Odwrotność modulo:", inv_mod(c, d))  # nie zawsze istnieje dla losowych liczb
+    print("Dodawawnie:", (c+d) % g)
+    print("Odejmowanie:", (c-d) % g)
+    print("Mnożenie:", (c*d) % g)
+    print("Odwrotność modulo:", inv_mod(c, d) % g)  # nie zawsze istnieje dla losowych liczb
 
 key = b'ae!r@s9*5gy^&j8l'  # 16 * 8 bit = 128 bit klucz, znak b wymusza typ binarny zmiennej key
 iv =  key # os.urandom(16)
